@@ -1,0 +1,11 @@
+# Ignore files
+Source_code/build/*
+Source_code/debug/*
+Source_code/release/*
+Source_code/.vscode/*
+.qmake.stash
+Bezier_curves.pro.user
+Makefile
+Makefile.Debug
+Makefile.Release
+
