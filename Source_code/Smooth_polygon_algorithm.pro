@@ -1,6 +1,7 @@
 #================================================================================
-# Filename: Bezier_curves.pro
-# Description: Project that illustrates the work with Bezier curves.
+# Filename: Smooth_polygon_algorithm.pro
+# Description: Project that illustrates the work with Bezier curves for 
+	solving the task of smoothing polygon vertices.
 #================================================================================
 
 QT += core gui
