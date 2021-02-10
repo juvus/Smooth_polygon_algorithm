@@ -17,19 +17,25 @@ Description: Different program constants
 // Namespace with program constants
 namespace Constants
 {
-    u32 INIT_WINDOW_WIDTH = 500;  // Width of the program window
-    u32 INIT_WINDOW_HEIGHT = 500;  // Geight of the program window
-    u32 MAX_NUM_MAJOR_POINTS = 10;  // Maximum number of polygon vertices
-    u32 NUM_MAJOR_POINTS = 6;  // Current number of polygon vertices
-    u32 MAX_NUM_SMOOTH_POINTS = 10;  // Maximum number of smoothing points
-    u32 NUM_SMOOTH_POINTS = 5;  // Current number of smoothing points
-    f32 MAX_ROUND_QUALITY = 0.5f;  // Maximum posible round quality
-    f32 MIN_ROUND_QUALITY = 0.05f;  // Minimum posible round quality
-    f32 ROUND_QUALITY = 0.5f;  // Current round quality (0.5 - 0.05)
-    QColor MAJOR_LINE_COLOR(0, 0, 255);  // Color of the major polygon lines
-    QColor MINOR_LINE_COLOR(255, 0, 0);  // Color of the minor polygon lines
-    QColor MAJOR_POINT_COLOR(0, 0, 255);  // Color of the major polygon points
-    QColor MINOR_POINT_COLOR(255, 0, 0);  // Color of the major polygon points
+    // Program window constants
+    const u32 INIT_WNDOW_WIDTH = 500;  // Width of the program window
+    const u32 INIT_WNDOW_HEIGHT = 500;  // Geight of the program window
+    const QColor WINDOW_BKG_COLOR(255, 255, 255);  // Background color of the window
+
+    // Polygon constants
+    const u32 MAX_NUM_MAJOR_POINTS = 10;  // Maximum number of major points
+    const u32 MIN_NUM_MAJOR_POINTS = 3;  // Minimum number of major points
+
+    const u32 MAX_NUM_SMOOTH_POINTS = 5;  // Maximum number of smooth points
+    const u32 MIN_NUM_SMOOTH_POINTS = 3;  // Minimum number of smooth points
+
+    const f32 MAX_ROUND_QUALITY = 0.45f;  // Maximum posible round quality
+    const f32 MIN_ROUND_QUALITY = 0.05f;  // Minimum posible round quality
+    
+    const QColor MAJOR_LINE_COLOR(0, 0, 255);  // Color of the major polygon lines
+    const QColor MINOR_LINE_COLOR(255, 0, 0);  // Color of the minor polygon lines
+    const QColor MAJOR_POINT_COLOR(0, 0, 255);  // Color of the major polygon points
+    const QColor MINOR_POINT_COLOR(255, 0, 0);  // Color of the major polygon points
 }
 
 #endif // CONSTANTS_H_

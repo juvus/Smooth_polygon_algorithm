@@ -24,87 +24,25 @@ DrawingWindow::DrawingWindow(QWindow *parent) : QWindow(parent),
 
     // Set title and set the window geometry
     setTitle("Smooth polygon drawing");
-    setGeometry(100, 100, INIT_WINDOW_WIDTH, INIT_WINDOW_HEIGHT);
+    setGeometry(100, 100, INIT_WNDOW_WIDTH, INIT_WNDOW_HEIGHT);
 
     // Create the smooth polygon object
     u32 x0 = width() / 2;  // Center point of the SmoothPolygon
     u32 y0 = height() / 2;  // Center point of the SmoothPolygon
     u32 max_vector_length = calc_largest(x0, y0);  // Max vector length
 
-    this->smooth_polygon = new SmoothPolygon(x0, y0, max_vector_length, NUM_VERTICES,
-        NUM_SMOOTH_POINTS, ROUND_QUALITY, LINE_COLOR, POINT_COLOR);
-
+    this->smooth_polygon = new SmoothPolygon(QPoint(x0, y0), max_vector_length);
 }
-
 
 DrawingWindow::~DrawingWindow()
 {
     // Destructor of the drawing window class
 }
 
-
-void
-DrawingWindow::setWidth(u32 width)
-{
-    // Setter for the window width
-
-    if (this->checkWidth(width)) {
-        this->resize(width, height());
-    }
-}
-
-
-void
-DrawingWindow::setHeight(u32 height)
-{
-    // Setter for the window height
-
-    if (this->checkHeight(height)) {
-        this->resize(width(), height);
-    }
-}
-
-bool
-DrawingWindow::checkWidth(u32 width)
-{
-    // Method for check the correct window width
-
-    // Get the screen width
-    QScreen *screen = QGuiApplication::primaryScreen();
-    QRect screenGeometry = screen->geometry();
-    u32 screen_width = screenGeometry.width();
-
-    if (width > screen_width) {
-        QString string = QString("ERROR: Window width is too large!");
-        show_error_and_exit(string);
-    }
-    
-    return true;
-}
-
-
-bool
-DrawingWindow::checkHeight(u32 height)
-{
-    // Method for check the correct window height
-
-    // Get the screen height
-    QScreen *screen = QGuiApplication::primaryScreen();
-    QRect screenGeometry = screen->geometry();
-    u32 screen_height = screenGeometry.height();
-
-    if (height > screen_height) {
-        QString string = QString("ERROR: Window height is too large!");
-        show_error_and_exit(string);
-    }
-   
-    return true;
-}
-
-
 bool
 DrawingWindow::event(QEvent *event)
 {
+    // Method for the handling of different events
     if (event->type() == QEvent::UpdateRequest) {
         renderNow();
         return true;
@@ -112,32 +50,32 @@ DrawingWindow::event(QEvent *event)
     return QWindow::event(event);
 }
 
-
 void
 DrawingWindow::renderLater()
 {
+    // Method (slot) for sending the event for window update request
     requestUpdate();
 }
-
 
 void
 DrawingWindow::resizeEvent(QResizeEvent *resizeEvent)
 {
+    // Method for the resize window event
     m_backingStore->resize(resizeEvent->size());
 }
-
 
 void
 DrawingWindow::exposeEvent(QExposeEvent *)
 {
+    // Method for the expose window event
     if (isExposed())
         renderNow();
 }
 
-
 void
 DrawingWindow::renderNow()
 {
+    // Method (slot) for render the window
     if (!isExposed())
         return;
 
@@ -147,20 +85,13 @@ DrawingWindow::renderNow()
     QPaintDevice *device = m_backingStore->paintDevice();
     QPainter painter(device);
 
+    // Fill the whole window with background color
     painter.fillRect(0, 0, width(), height(), QColor(255, 255, 255));
-    render(&painter);
-    painter.end();
 
+    // Render the SmoothPolygon object
+    this->smooth_polygon->render(&painter);
+
+    painter.end();
     m_backingStore->endPaint();
     m_backingStore->flush(rect);
-}
-
-
-void
-DrawingWindow::render(QPainter *painter)
-{
-    // Method for render the window and all the objects
-
-    // Render the smooth polygon
-    this->smooth_polygon->render(painter);    
 }

@@ -1,7 +1,7 @@
 #================================================================================
 # Filename: Smooth_polygon_algorithm.pro
 # Description: Project that illustrates the work with Bezier curves for 
-	solving the task of smoothing polygon vertices.
+#   solving the task of smoothing polygon vertices.
 #================================================================================
 
 QT += core gui
@@ -18,7 +18,7 @@ SOURCES += \
 
 HEADERS += \
     ./include/drawing_window.h \
-	./include/constants.h \
+    ./include/constants.h \
     ./include/misc_functions.h \
     ./include/smooth_polygon.h \
     ./include/utils.h

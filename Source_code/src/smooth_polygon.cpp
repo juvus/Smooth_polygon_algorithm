@@ -19,25 +19,16 @@ Description: Definition of the SmoothPolygon class methods.
 #include <misc_functions.h>
 #include <constants.h>
 
-SmoothPolygon::SmoothPolygon(QPoint center, u32 max_vector_length, u32 min_vector_length, 
-    u32 num_major_points, u32 num_smooth_points, f32 round_quality)
+SmoothPolygon::SmoothPolygon(QPoint center, u32 max_vector_length)
 {
     // Constructor of the SmoothPolygon object
     
     this->center = center;
     this->max_vector_length = max_vector_length;
-    this->min_vector_length = min_vector_length;
+    this->min_vector_length = std::round(0.1f * max_vector_length);
     
-    if (this->checkNumMajorPoints(num_major_points))
-        this->num_major_points = num_major_points;
-
-    if (this->checkNumSmoothPoints(num_smooth_points))
-        this->num_smooth_points = num_smooth_points;
-
-    if (this->checkRoundQuality(round_quality))
-        this->round_quality = round_quality;
-    
-    this->num_minor_points = num_major_points * num_smooth_points;
+    // Randomize the polygon
+    this->randomizeSmoothPolygon();
 
     // Calculate coordinates of the polygon major and minor points (de Casteljan algorithm)
     this->calcMajorPoints();
@@ -50,172 +41,62 @@ SmoothPolygon::setCenterPosition(QPoint center)
     // Setter for the polygon center position
     
     this->center = center;
-
-    // Calculate coordinates of the polygon major and minor points
-    this->calcMajorPoints();
-    this->calcMinorPoints();
 }
-
-
-
-
 
 void
 SmoothPolygon::setMaxVectorLength(u32 length)
 {
     // Setter for the maximum vector length
 
-    // Assignment of the maximum vector length
-    if (this->checkMaxVectorLength(length)) {
-        this->max_vector_length = length;
+    this->max_vector_length = length;
+    this->min_vector_length = round(0.1f * max_vector_length);
+}
+
+void
+SmoothPolygon::randomizeSmoothPolygon()
+{
+    // Method for randomize the polygon parameters
+
+    u32 i;
+    f32 rnd_num;  // Temporary rnd number [0.0 ... 1.0)
+    f32 tmp;  // Temporary f32 value;
+    using namespace Constants;
+
+    // Setup the random number generator (Securely seeded generator)
+    QRandomGenerator generator  = QRandomGenerator::securelySeeded();
+
+    this->num_major_points = generator.bounded(MIN_NUM_MAJOR_POINTS, MAX_NUM_MAJOR_POINTS + 1);
+    this->num_smooth_points = generator.bounded(MIN_NUM_SMOOTH_POINTS, MAX_NUM_SMOOTH_POINTS + 1);
+    this->num_minor_points = this->num_major_points * this->num_smooth_points;
+
+    // Randomize the vector of polygon radius-vectors
+    this->vectors.clear();
+    for (i = 0; i < this->num_major_points; ++i)
+    {
+        rnd_num = static_cast<f32>(generator.generateDouble());
+        tmp = this->min_vector_length + rnd_num * \
+            (this->max_vector_length - this->min_vector_length);
+        this->vectors.append(tmp);
     }
 
-    // Recalculate the polygon major and extended vertices
-    this->calculateVertices();
-    this->calculateExtendedVertices();
-}
-
-
-void
-SmoothPolygon::setNumVertices(u32 num_vertices)
-{
-    // Setter for the number of vertices
-
-    // Assignment of the number of vertices
-    if (this->checkNumVertices(num_vertices)) {
-        this->num_vertices = num_vertices;
+    // Randomize the vector of round qualities
+    this->round_qualities.clear();
+    for (i = 0; i < this->num_major_points; ++i)
+    {
+        rnd_num = static_cast<f32>(generator.generateDouble());
+        tmp = MIN_ROUND_QUALITY + rnd_num * (MAX_ROUND_QUALITY - MIN_ROUND_QUALITY);
+        this->round_qualities.append(tmp);
     }
-
-    // Recalculate the polygon major and extended vertices
-    this->calculateVertices();
-    this->calculateExtendedVertices();
 }
 
-
-void
-SmoothPolygon::setNumSmoothPoints(u32 num_smooth_points)
+void 
+SmoothPolygon::calcPoints()
 {
-    // Setter for the number of corner smoothing points
-
-    // Assignment of the number of corner smoothing points
-    if (this->checkNumSmoothPoints(num_smooth_points)) {
-        this->num_smooth_points = num_smooth_points;
-    }
-
-    // Recalculate the polygon major and extended vertices
-    this->calculateVertices();
-    this->calculateExtendedVertices();
-}
-
-
-void
-SmoothPolygon::setRoundQuality(f32 round_quality)
-{
-    // Setter for the rounding quality
-
-    // Assignment of the rounding quality
-    if (this->checkRoundQuality(round_quality)) {
-        this->round_quality = round_quality;
-    }
-
-    // Recalculate the polygon major and extended vertices
-    this->calculateVertices();
-    this->calculateExtendedVertices();
-}
-
-
-void
-SmoothPolygon::setLineColor(QColor line_color)
-{
-    // Setter for the polygon lines color
-
-    this->line_color = line_color;
-}
-
-
-void
-SmoothPolygon::setPointColor(QColor point_color)
-{
-    // Setter for the polygon major points color
-
-    this->point_color = point_color;
-}
-
-
-bool SmoothPolygon::checkCenterPosition(u32 x0, u32 y0)
-{
-    // Method for check the correct center position
+    // Method to calculate the position of polygon points
     
-    if ((x0 > window_width) || (y0 > window_height)) {
-        QString string = QString("ERROR: x0 or y0 coordinates is out of the screen!"); 
-        show_error_and_exit(string);
-    }
-
-    return true;
+    this->calcMajorPoints();
+    this->calcMinorPoints();
 }
-
-
-bool
-SmoothPolygon::checkMaxVectorLength(u32 length)
-{
-    // Method for check the correct maximum vector length
-
-    u32 max_horizontal_length = this->window_width - this->x0;
-    u32 max_vertical_length = this->window_height - this->y0;
-
-    if ((length > max_horizontal_length) || (length > max_vertical_length)) {
-        QString string = QString("ERROR: Vector length is too long!"); 
-        show_error_and_exit(string); 
-    }
-
-    return true;
-}
-
-
-bool
-SmoothPolygon::checkNumVertices(u32 num_vertices)
-{
-    // Method for check the correct number of vectors
-
-    if (num_vertices > MAX_NUM_VERTICES) {
-        QString string = QString("ERROR: Number of vertices is to large (max is %1)")
-            .arg(MAX_NUM_VERTICES);
-        show_error_and_exit(string);
-    }
-
-    return true;
-}
-
-
-bool
-SmoothPolygon::checkNumSmoothPoints(u32 num_smooth_points)
-{
-    // Method for check the correct number of corner smoothing points
-
-    if (num_smooth_points > MAX_NUM_SMOOTH_POINTS) {
-        QString string = QString("ERROR: Number of smooth points is to large (max is %1)")
-            .arg(MAX_NUM_SMOOTH_POINTS);
-        show_error_and_exit(string);
-    }
-
-    return true;
-}
-
-
-bool
-SmoothPolygon::checkRoundQuality(f32 round_quality)
-{
-    // Method for check the correct rounding quality. The rounding
-    // quality should be in the range [0.0, 0.5]
-
-    if ((round_quality < 0.1) || (round_quality > 0.5)) {
-        QString string = QString("ERROR: Round quality should be in range [0.0, 0.5]");
-        show_error_and_exit(string);
-    }
-
-    return true;
-}
-
 
 void
 SmoothPolygon::render(QPainter *painter)
@@ -223,7 +104,8 @@ SmoothPolygon::render(QPainter *painter)
     // Method for render of the polygon
 
     QPen pen;
-    u32 diameter = 5;
+    u32 diameter = 6;
+    u32 i;
     
     // Set the antialiasing
     painter->setRenderHint(QPainter::Antialiasing);
@@ -233,23 +115,19 @@ SmoothPolygon::render(QPainter *painter)
     pen.setColor(QColor(0, 0, 200));
     painter->setPen(pen);
     
-    for (u32 i = 1; i < this->num_vertices; ++i) {
-        painter->drawLine(this->vertices[i], this->vertices[i - 1]);
+    for (i = 1; i < this->num_major_points; ++i) {
+        painter->drawLine(this->major_points[i], this->major_points[i - 1]);
     }
-    painter->drawLine(this->vertices[0], this->vertices[this->num_vertices - 1]);
+    painter->drawLine(this->major_points[0], this->major_points[this->num_major_points - 1]);
 
     // Draw the major points of the polygon
     pen.setStyle(Qt::SolidLine);
     painter->setPen(pen);
     painter->setBrush(QColor(255, 255, 255));
     
-    for (u32 i = 0; i < this->num_vertices; ++i) {
-        painter->drawEllipse(this->vertices[i], diameter / 2, diameter / 2);
+    for (i = 0; i < this->num_major_points; ++i) {
+        painter->drawEllipse(this->major_points[i], diameter / 2, diameter / 2);
     }
-
-
-
-
     /*
 
     // Coordinates of the vertices
@@ -285,45 +163,39 @@ SmoothPolygon::render(QPainter *painter)
     */   
 }
 
-
 void
-SmoothPolygon::calculateVertices()
+SmoothPolygon::calcMajorPoints()
 {
-    // Method for calculation of the major polygon vertices
+    // Method for calculation of the major polygon point
 
+    u32 i;
     f32 angle = 0.0f;  // Initial angle
-    f32 angle_delta = 2 * M_PI / this->num_vertices;
-    s32 x_tmp, y_tmp;  // Temporary points coordinates (around (0,0) point)
-    u32 x_coord, y_coord;  // Point coordinates around x0, y0 point
-    f32 radius;  // Random radius-vector 
-    f32 rnd_num;  // Rnadom number [0.1, 1)
-    
-    // Setup the random number generator
-    QRandomGenerator gen  = QRandomGenerator::securelySeeded(); // Securely seeded generator.
-        
-    for (u32 i = 0; i < this->num_vertices; ++i) {
+    f32 angle_delta = 2.0f * M_PI / this->num_major_points;
+    s32 x_tmp, y_tmp;  // Temporary points coordinates (around polygon center point)
+    u32 x_coord, y_coord;  // Point coordinates around in the window
+    f32 vector;  // Current polygon radius-vector
 
-        // Generate the random number
-        rnd_num = 0.1f + 0.9f * static_cast<f32>(gen.generateDouble());       
+    this->major_points.clear();    
+    for (i = 0; i < this->num_major_points; ++i)
+    {
+        vector = this->vectors[i];
 
         // Calculation of the new point coordinates
-        radius = this->max_vector_length * rnd_num; 
-        x_tmp = static_cast<s32>(std::round(radius * std::cos(angle)));
-        y_tmp = static_cast<s32>(std::round(radius * std::sin(angle)));
-        x_coord = this->x0 + x_tmp;
-        y_coord = this->y0 - y_tmp;
+        x_tmp = static_cast<s32>(std::round(vector * std::cos(angle)));
+        y_tmp = static_cast<s32>(std::round(vector * std::sin(angle)));
+        x_coord = static_cast<u32>(this->center.x() + x_tmp);
+        y_coord = static_cast<u32>(this->center.y() - y_tmp);
 
         // Append the point to the vertices qvector
-        this->vertices.append(QPoint(x_coord, y_coord));
+        this->major_points.append(QPoint(x_coord, y_coord));
 
-        // New angle value
+        // Calculate point coordinates for next angle value
         angle += angle_delta;
     }
 }
 
-
 void
-SmoothPolygon::calculateExtendedVertices()
+SmoothPolygon::calcMinorPoints()
 {
     // Method for calculation of the extended polygon vertices (de Casteljan algorithm)
 

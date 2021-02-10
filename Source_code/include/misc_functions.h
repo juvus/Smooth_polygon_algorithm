@@ -6,7 +6,7 @@
 #define MISC_FUNCTIONS_H_
 
 #include <QString>
-#include "utils.h"
+#include <utils.h>
 
 // Function for printing the error message to std and exitting the program
 void show_error_and_exit(QString string);
