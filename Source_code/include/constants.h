@@ -34,8 +34,6 @@ namespace Constants
     
     const QColor MAJOR_LINE_COLOR(0, 0, 255);  // Color of the major polygon lines
     const QColor MINOR_LINE_COLOR(255, 0, 0);  // Color of the minor polygon lines
-    const QColor MAJOR_POINT_COLOR(0, 0, 255);  // Color of the major polygon points
-    const QColor MINOR_POINT_COLOR(255, 0, 0);  // Color of the major polygon points
 }
 
 #endif // CONSTANTS_H_

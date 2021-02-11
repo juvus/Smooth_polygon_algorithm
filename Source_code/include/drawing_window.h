@@ -21,9 +21,6 @@ class DrawingWindow : public QWindow
     // Class for the DrawingWindow
     Q_OBJECT
 
-    SmoothPolygon *smooth_polygon;  // Pointer to the SmoothPolygon class
-    QBackingStore *m_backingStore;  // Provides a drawing area for window
-
 public:
     // Constructor of the class
     DrawingWindow(QWindow *parent = 0); 
@@ -42,11 +39,18 @@ protected:
     // Method for the handling of different events
     bool event(QEvent *event) override;
 
+    // Method for handle the mouse press event on the window
+    void mousePressEvent(QMouseEvent *event) override;
+
     // Method for the resize window event
     void resizeEvent(QResizeEvent *event) override;
 
     // Method for the expose window event
     void exposeEvent(QExposeEvent *event) override;   
+
+private:
+    SmoothPolygon *smooth_polygon;  // Pointer to the SmoothPolygon class
+    QBackingStore *m_backingStore;  // Provides a drawing area for window
 };
 
 #endif // DRAWING_WINDOW_H_

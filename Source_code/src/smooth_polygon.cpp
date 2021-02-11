@@ -106,13 +106,14 @@ SmoothPolygon::render(QPainter *painter)
     QPen pen;
     u32 diameter = 6;
     u32 i;
+    using namespace Constants;
     
     // Set the antialiasing
     painter->setRenderHint(QPainter::Antialiasing);
 
     // Draw the major lines of the polygon
     pen.setStyle(Qt::DashLine);
-    pen.setColor(QColor(0, 0, 200));
+    pen.setColor(MAJOR_LINE_COLOR);
     painter->setPen(pen);
     
     for (i = 1; i < this->num_major_points; ++i) {

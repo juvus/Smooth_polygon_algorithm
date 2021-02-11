@@ -37,6 +37,7 @@ DrawingWindow::DrawingWindow(QWindow *parent) : QWindow(parent),
 DrawingWindow::~DrawingWindow()
 {
     // Destructor of the drawing window class
+    delete this->smooth_polygon;
 }
 
 bool
@@ -49,6 +50,22 @@ DrawingWindow::event(QEvent *event)
     }
     return QWindow::event(event);
 }
+
+void
+DrawingWindow::mousePressEvent(QMouseEvent *event)
+{
+    // Method for handle the mouse press event on the window
+    if (event->button() == Qt::LeftButton) 
+    {
+        // Create new polygon
+        this->smooth_polygon->randomizeSmoothPolygon();
+        this->smooth_polygon->calcPoints();
+
+        // Request update of the window
+        requestUpdate();
+    }
+}
+
 
 void
 DrawingWindow::renderLater()
