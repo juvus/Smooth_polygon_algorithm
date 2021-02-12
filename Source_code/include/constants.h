@@ -32,6 +32,7 @@ namespace Constants
     const f32 MAX_ROUND_QUALITY = 0.45f;  // Maximum posible round quality
     const f32 MIN_ROUND_QUALITY = 0.05f;  // Minimum posible round quality
     
+    const QColor CENTER_COLOR(0, 200, 0);  // Color of the polygon center point
     const QColor MAJOR_LINE_COLOR(0, 0, 255);  // Color of the major polygon lines
     const QColor MINOR_LINE_COLOR(255, 0, 0);  // Color of the minor polygon lines
 }

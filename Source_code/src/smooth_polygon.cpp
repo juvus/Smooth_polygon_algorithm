@@ -9,7 +9,6 @@ Description: Definition of the SmoothPolygon class methods.
 #include <QtGui>
 #include <QString>
 #include <QVector>
-#include <QDebug>
 #include <QRandomGenerator>
 #include <cmath>
 
@@ -46,7 +45,20 @@ SmoothPolygon::setCenterPosition(QPoint center)
 void
 SmoothPolygon::setMaxVectorLength(u32 length)
 {
-    // Setter for the maximum vector length
+    /* Setter for the maximum vector length. The method also scale the current
+       radius-vectors */
+
+    u32 old_vector_length = this->max_vector_length;
+    f32 ratio;
+    u32 i;
+
+    ratio = static_cast<f32>(length) / old_vector_length;
+
+    // Update the vector with polygon vectors length
+    for (i = 0; i < this->num_major_points; ++i)
+    {
+        this->vectors[i] *= ratio;
+    }
 
     this->max_vector_length = length;
     this->min_vector_length = round(0.1f * max_vector_length);
@@ -111,6 +123,13 @@ SmoothPolygon::render(QPainter *painter)
     // Set the antialiasing
     painter->setRenderHint(QPainter::Antialiasing);
 
+    // Draw the center polygon point
+    pen.setStyle(Qt::SolidLine);
+    pen.setColor(CENTER_COLOR);
+    painter->setPen(pen);
+    painter->setBrush(QColor(255, 255, 255));
+    painter->drawEllipse(this->center, diameter / 2, diameter / 2);
+    
     // Draw the major lines of the polygon
     pen.setStyle(Qt::DashLine);
     pen.setColor(MAJOR_LINE_COLOR);
@@ -129,39 +148,26 @@ SmoothPolygon::render(QPainter *painter)
     for (i = 0; i < this->num_major_points; ++i) {
         painter->drawEllipse(this->major_points[i], diameter / 2, diameter / 2);
     }
-    /*
-
-    // Coordinates of the vertices
-    int diameter = 6;
-    QPoint p0(100, 100);
-    QPoint p1(250, 400);
-    QPoint p2(400, 100);
-      
-    // Set the antialiasing
-    painter->setRenderHint(QPainter::Antialiasing);
-
-    // Set the pen and brush for the drawing
-    painter->setPen(Qt::NoPen);
-    painter->setBrush(QColor(0, 0, 200)); // Blue
-
-    // Draw the point on the window
-    painter->drawEllipse(p0, diameter / 2, diameter / 2);
-    painter->drawEllipse(p1, diameter / 2, diameter / 2);
-    painter->drawEllipse(p2, diameter / 2, diameter / 2);
-
-    // Draw the interpolation points using the quadratic Bezier curve (Casteljau algorithm)
-    painter->setBrush(QColor(200, 0, 0)); // Red
-    float t = 0.0;
-    int numPoints = 20;
-    int pt_x, pt_y;
-   
-    for (int i = 0; i < numPoints; ++i) {
-        t = t + 1.0 / (numPoints + 1);
-        pt_x = std::round(std::pow(1.0 - t, 2)*p0.x() + 2*t*(1 - t)*p1.x() + std::pow(t, 2)*p2.x());
-        pt_y = std::round(std::pow(1.0 - t, 2)*p0.y() + 2*t*(1 - t)*p1.y() + std::pow(t, 2)*p2.y());
-        painter->drawEllipse(QPoint(pt_x, pt_y), diameter / 2, diameter / 2);
-    } 
-    */   
+    
+    // Draw the minor lines of the polygon
+    pen.setStyle(Qt::SolidLine);
+    pen.setColor(MINOR_LINE_COLOR);
+    //pen.setWidth(2);
+    painter->setPen(pen);
+    
+    for (i = 1; i < this->num_minor_points; ++i) {
+        painter->drawLine(this->minor_points[i], this->minor_points[i - 1]);
+    }
+    painter->drawLine(this->minor_points[0], this->minor_points[this->num_minor_points - 1]);
+    
+    // Draw the minor points of the polygon
+    pen.setStyle(Qt::SolidLine);
+    painter->setPen(pen);
+    painter->setBrush(QColor(255, 255, 255));
+    
+    for (i = 0; i < this->num_minor_points; ++i) {
+        painter->drawEllipse(this->minor_points[i], diameter / 2, diameter / 2);
+    }   
 }
 
 void
@@ -198,9 +204,64 @@ SmoothPolygon::calcMajorPoints()
 void
 SmoothPolygon::calcMinorPoints()
 {
-    // Method for calculation of the extended polygon vertices (de Casteljan algorithm)
+    /* Method for calculation of the minor polygon points. Calculations are performed
+       utilizing de Casteljan algorithm. */   
+    
+    QPoint prev_major_point;  // Previous major point of the polygon
+    QPoint cur_major_point;  // Curent major point of the polygon
+    QPoint next_major_point;  // Next major point of the polygon
 
-    qDebug() << "Calculate extended vertices";
+    QPoint prev_edge_point;  // Point sliding the previous edge
+    QPoint next_edge_point;  // Point sliding the next edge
+    QPoint result_minor_point;  // Point sliding the edge between prev and next major points
+    
+    u32 i, j;  // Temporary counters
+    f32 round_quality;  // Current major point round quality value
+    f32 delta_edge;  // Delta of distance on previous and next edges
+    f32 dist_edge;  // Distance on previous and next edges
+    f32 delta_between;  // Delta of distance on edge between prev_edge and next_edge points
+    f32 dist_between;  // Distance on between edge from prev_edge to next_edge points
+
+    // Clear the vector of minor polygon points
+    this->minor_points.clear();
+
+    for (i = 0; i < this->num_major_points; ++i)
+    {
+        // Current major point definition:
+        cur_major_point = this->major_points[i];
+
+        // Previous major point definition:
+        if (i == 0)
+            prev_major_point = this->major_points[this->num_major_points - 1];
+        else
+            prev_major_point = this->major_points[i - 1];
+
+        // Next major point definition:
+        if (i == (this->num_major_points - 1))
+            next_major_point = this->major_points[0];
+        else
+            next_major_point = this->major_points[i + 1];
+
+        // Calculate the deltas and initialize distances:
+        round_quality = this->round_qualities[i];
+        delta_edge = round_quality / (this->num_smooth_points - 1);
+        dist_edge = 0.0f;
+        delta_between = 1.0f / (this->num_smooth_points - 1);
+        dist_between = 0.0f;
+        
+        // Cycle to calculate the minor point positions
+        for (j = 0; j < this->num_smooth_points; ++j)
+        {
+            prev_edge_point = find_between_point(prev_major_point, cur_major_point,
+                (1.0f - round_quality + dist_edge)); 
+            next_edge_point = find_between_point(cur_major_point, next_major_point, dist_edge);    
+            result_minor_point = find_between_point(prev_edge_point, next_edge_point, dist_between);
+            this->minor_points.append(result_minor_point);
+
+            dist_edge += delta_edge;
+            dist_between += delta_between;
+        }
+    }
 }
 
 

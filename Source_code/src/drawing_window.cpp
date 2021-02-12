@@ -29,7 +29,7 @@ DrawingWindow::DrawingWindow(QWindow *parent) : QWindow(parent),
     // Create the smooth polygon object
     u32 x0 = width() / 2;  // Center point of the SmoothPolygon
     u32 y0 = height() / 2;  // Center point of the SmoothPolygon
-    u32 max_vector_length = calc_largest(x0, y0);  // Max vector length
+    u32 max_vector_length = calc_lowest(x0, y0);  // Max vector length
 
     this->smooth_polygon = new SmoothPolygon(QPoint(x0, y0), max_vector_length);
 }
@@ -78,7 +78,24 @@ void
 DrawingWindow::resizeEvent(QResizeEvent *resizeEvent)
 {
     // Method for the resize window event
+    
+    // Guard very small window size
+    if ((width() <= 100) || (height() <= 100))
+        return;
+    
     m_backingStore->resize(resizeEvent->size());
+
+    // Recalculate the polygon points
+    u32 x0 = width() / 2;  // Center point of the SmoothPolygon
+    u32 y0 = height() / 2;  // Center point of the SmoothPolygon
+    u32 max_vector_length = calc_lowest(x0, y0);  // Max vector length
+    
+    this->smooth_polygon->setCenterPosition(QPoint(x0, y0));
+    this->smooth_polygon->setMaxVectorLength(max_vector_length);
+    this->smooth_polygon->calcPoints();
+
+    // Request update of the window
+    requestUpdate();
 }
 
 void
