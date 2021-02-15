@@ -25,6 +25,7 @@ DrawingWindow::DrawingWindow(QWindow *parent) : QWindow(parent),
     // Set title and set the window geometry
     setTitle("Smooth polygon drawing");
     setGeometry(100, 100, INIT_WNDOW_WIDTH, INIT_WNDOW_HEIGHT);
+    setMinimumSize(QSize(200, 200));
 
     // Create the smooth polygon object
     u32 x0 = width() / 2;  // Center point of the SmoothPolygon
@@ -80,8 +81,8 @@ DrawingWindow::resizeEvent(QResizeEvent *resizeEvent)
     // Method for the resize window event
     
     // Guard very small window size
-    if ((width() <= 100) || (height() <= 100))
-        return;
+    //if ((width() <= 100) || (height() <= 100))
+    //    return;
     
     m_backingStore->resize(resizeEvent->size());
 
