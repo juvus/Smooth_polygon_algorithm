@@ -13,7 +13,12 @@ Description: Declaration of the ControlWindow class methods.
 
 // Program includes:
 #include <drawing_window.h>
-#include "../build/debug/ui/ui_ControlWindow.h"
+
+#ifdef DEBUG
+    #include "../build/debug/ui/ui_ControlWindow.h"
+#else
+    #include "../build/release/ui/ui_ControlWindow.h"
+#endif
 
 class DrawingWindow;
 
