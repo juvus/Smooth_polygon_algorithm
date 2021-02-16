@@ -3,9 +3,9 @@ Source_code/build/*
 Source_code/debug/*
 Source_code/release/*
 Source_code/.vscode/*
+Reports/*
 .qmake.stash
 *.user
 Makefile
 Makefile.Debug
 Makefile.Release
-
