@@ -5,7 +5,7 @@ The application demonstates the work of the algorithm for constructing an arbitr
 Схематически работа алгоритма для сгругления одной вершины многоугольника паказана на рис. 1. Для успешной работы алгоритма необходимо знать координаты трёх вершин: вершины для которой происходит скругление, предыдущей и последующей вершины многоугольника.  
 
 <img src="/img/curve.png" alt="Curve.png" width=60%>&nbsp;&nbsp;&nbsp;
-<img src="/img/curve_anumation.gif" alt="Curve animation.gif" width=60%>&nbsp;&nbsp;&nbsp;
+<img src="/img/curve_animation.gif" alt="Curve animation.gif" width=60%>&nbsp;&nbsp;&nbsp;
 
 **Fig. 1.** Схематическое изображение работы алгоритма по скруглению вершины многоугольника.
 
