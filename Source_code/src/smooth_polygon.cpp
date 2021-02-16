@@ -217,8 +217,6 @@ SmoothPolygon::calcMinorPoints()
     f32 round_quality;  // Current major point round quality value
     f32 delta_t;  // Delta t parameter for Bezier points calculation
     f32 t;  // t parameter for Bezier points calculation (0 - 1)
-    f32 delta_between;  // Delta of distance on edge between prev_edge and next_edge points
-    f32 dist_between;  // Distance on between edge from prev_edge to next_edge points
 
     // Clear the vector of minor polygon points
     this->minor_points.clear();
