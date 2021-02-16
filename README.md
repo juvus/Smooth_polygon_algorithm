@@ -23,7 +23,7 @@ When application is running the result of generation and rendering of a smooth p
 `Smooth points`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number of points that defines the quality of smoothing of every particular polygon vertex. It is obvious that more smooth points results to the more smooth surface.<br>
 `Round quality`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parameter showing how close the begining and end poits of a smoothing curve (Bezier curve) to the polygon vertex. Lower value produces more sharp corner.<br>
 
-After pressing the `Generate polygon` button, the polygon is generated and rendered with a set of parameters, the values of which are randomly selected between the defined MIN and MAX values. For example, if the value of `MIN major points` = 3 and `MAX major points` = 10 are defined for the `Major points` parameter, then only polygons with the number of vertices from 3 to 10 will be generated randomly. The situation is similar for the rest parameters.
+After pressing the `Generate polygon` button, the polygon is generated and rendered with a set of parameters, the values of which are randomly selected between the defined MIN and MAX values. For example, if `MIN major points = 3` and `MAX major points = 10` are defined for the `Major points` parameter, then only polygons with the number of vertices from 3 to 10 will be generated randomly. The situation is similar for the rest parameters.
 
 ## Install from source
 Installation, compilation and run of the application occurs when executing commands in a terminal window (The method is described for a UNIX-like terminal, for example, Bash from MSYS2. It also requires a working Mingw-w64 - G++ compiler, Qt5 framework libraries installed and configured paths).
@@ -31,49 +31,33 @@ Installation, compilation and run of the application occurs when executing comma
 -	Copying the repository to a local directory:
 ```
 $ git clone https://github.com/juvus/Smooth_polygon_algorithm.git
-$ cd Circles_packaging_simulation/
+$ cd Smooth_polygon_algorithm/Source_code/
 ```
 -	Configuring of the application with qmake:
 ```
-$ 
+$ qmake -o makefile Smooth_polygon_algorithm.pro
 ```
-
-
--	Compiling of the application:
+-	Compiling of the application (debug or release):
 ```
-$ mingw32-make
+$ mingw32-make release
 ```
--	Running the application:
+-	Running the application (debug or release):
 ```
-$ cd build/
+$ cd build/release/
 $ ./Program
 ```
 
 ## Project Organization
 - <img src="/img/folder.png" alt="folder" width=18px> `include/` &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public header files
-- <img src="/img/folder.png" alt="folder" width=18px> `data/` &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Files necessary for application
 - <img src="/img/folder.png" alt="folder" width=18px> `src/` &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Source code files
+- <img src="/img/folder.png" alt="folder" width=18px> `ui/` &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Graphical user interface files
 - <img src="/img/folder.png" alt="folder" width=18px> `img/` &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Images, necessary for the documentation
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Licence
 Smooth polygon algorithm code in this project is available under the `GPLv3` license. You can find the license file here: [LICENSE](/LICENSE)
 
 ## References
-[1] https://en.wikipedia.org/wiki/B%C3%A9zier_curve
-[2] https://www.qt.io/
+[1] https://en.wikipedia.org/wiki/B%C3%A9zier_curve<br>
+[2] https://www.qt.io/<br>
+
 
