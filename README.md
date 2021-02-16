@@ -4,8 +4,8 @@ The application demonstates the work of the algorithm for constructing an arbitr
 
 When tha application is started, two graphic windows are opened: *drawing window* which render a smooth polygon and *control window* which determines settings for the generation of a new polygon. These windows are shown on Fig. 1.
 
-<img src="/img/drawing_window.png" alt="Drawing window.png" width=50%%>&nbsp;&nbsp;&nbsp;
-<img src="/img/control_window.png" alt="Control window.png" width=50%>&nbsp;&nbsp;&nbsp;
+<img src="/img/drawing_window.png" alt="Drawing window.png" width=30%>&nbsp;&nbsp;&nbsp;
+<img src="/img/control_window.png" alt="Control window.png" width=30%>&nbsp;&nbsp;&nbsp;
 
 **Fig. 1.** Drawing and control windows of the program.
 
