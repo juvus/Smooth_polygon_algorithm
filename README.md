@@ -19,7 +19,7 @@ When tha application is started, two graphic windows are opened: *drawing window
 ## Documentstion
 When application is running the result of generation and rendering of a smooth polygon in drawing window can be controlled using control window. Control window has a number of spin box widgets for setting the lower and upper bounds of the following parameters:
 
-`Major points`&nbsp-&nbsp;Number of major points (vertices) of a polygon.<br>
+`Major points`&nbsp;-&nbsp;Number of major points (vertices) of a polygon.<br>
 `Smooth points`&nbsp;-&nbsp;Number of points that defines the quality of smoothing of every particular polygon vertex. It is obvious that more smooth points results to the more smooth surface.<br>
 `Round quality`&nbsp;-&nbsp;Parameter showing how close the begining and end poits of a smoothing curve (Bezier curve) to the polygon vertex. Lower value produces more sharp corner.<br>
 
