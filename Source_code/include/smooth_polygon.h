@@ -49,7 +49,9 @@ public:
     void setMaxVectorLength(u32 length);
 
     // Method for randomize the polygon parameters
-    void randomizeSmoothPolygon();
+    void randomizeSmoothPolygon(u32 min_num_major_points, u32 max_num_major_points,
+        u32 min_num_smooth_points, u32 max_num_smooth_points, f32 min_round_quality, 
+        f32 max_round_quality);
 
     // Method to calculate the position of polygon points
     void calcPoints();

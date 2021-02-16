@@ -7,6 +7,7 @@ Description: Definition of the DrawingWindow class methods. This is the main
 */
 
 // Standard includes:
+#include <QtGui>
 
 // Program includes:
 #include <drawing_window.h>
@@ -45,28 +46,19 @@ bool
 DrawingWindow::event(QEvent *event)
 {
     // Method for the handling of different events
-    if (event->type() == QEvent::UpdateRequest) {
+    if (event->type() == QEvent::UpdateRequest) 
+    {
         renderNow();
         return true;
     }
+    else if (event->type() == QEvent::Close)
+    {
+        // Close the control window
+        this->control_window->close();
+        this->control_window = nullptr;
+    }
     return QWindow::event(event);
 }
-
-void
-DrawingWindow::mousePressEvent(QMouseEvent *event)
-{
-    // Method for handle the mouse press event on the window
-    if (event->button() == Qt::LeftButton) 
-    {
-        // Create new polygon
-        this->smooth_polygon->randomizeSmoothPolygon();
-        this->smooth_polygon->calcPoints();
-
-        // Request update of the window
-        requestUpdate();
-    }
-}
-
 
 void
 DrawingWindow::renderLater()
@@ -79,10 +71,6 @@ void
 DrawingWindow::resizeEvent(QResizeEvent *resizeEvent)
 {
     // Method for the resize window event
-    
-    // Guard very small window size
-    //if ((width() <= 100) || (height() <= 100))
-    //    return;
     
     m_backingStore->resize(resizeEvent->size());
 

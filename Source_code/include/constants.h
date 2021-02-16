@@ -23,10 +23,10 @@ namespace Constants
     const QColor WINDOW_BKG_COLOR(255, 255, 255);  // Background color of the window
 
     // Polygon constants
-    const u32 MAX_NUM_MAJOR_POINTS = 10;  // Maximum number of major points
+    const u32 MAX_NUM_MAJOR_POINTS = 20;  // Maximum number of major points
     const u32 MIN_NUM_MAJOR_POINTS = 3;  // Minimum number of major points
 
-    const u32 MAX_NUM_SMOOTH_POINTS = 5;  // Maximum number of smooth points
+    const u32 MAX_NUM_SMOOTH_POINTS = 10;  // Maximum number of smooth points
     const u32 MIN_NUM_SMOOTH_POINTS = 3;  // Minimum number of smooth points
 
     const f32 MAX_ROUND_QUALITY = 0.45f;  // Maximum posible round quality

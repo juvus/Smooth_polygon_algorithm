@@ -19,15 +19,13 @@ Description: Definition of the SmoothPolygon class methods.
 #include <constants.h>
 
 SmoothPolygon::SmoothPolygon(QPoint center, u32 max_vector_length)
+    : center(center), max_vector_length(max_vector_length)
 {
     // Constructor of the SmoothPolygon object
-    
-    this->center = center;
-    this->max_vector_length = max_vector_length;
     this->min_vector_length = std::round(0.1f * max_vector_length);
     
     // Randomize the polygon
-    this->randomizeSmoothPolygon();
+    this->randomizeSmoothPolygon(3, 10, 3, 10, 0.05, 0.45);
 
     // Calculate coordinates of the polygon major and minor points (de Casteljan algorithm)
     this->calcMajorPoints();
@@ -65,20 +63,20 @@ SmoothPolygon::setMaxVectorLength(u32 length)
 }
 
 void
-SmoothPolygon::randomizeSmoothPolygon()
+SmoothPolygon::randomizeSmoothPolygon(u32 min_num_major_points, u32 max_num_major_points,
+    u32 min_num_smooth_points, u32 max_num_smooth_points, f32 min_round_quality, 
+    f32 max_round_quality)
 {
     // Method for randomize the polygon parameters
-
     u32 i;
     f32 rnd_num;  // Temporary rnd number [0.0 ... 1.0)
     f32 tmp;  // Temporary f32 value;
-    using namespace Constants;
 
     // Setup the random number generator (Securely seeded generator)
     QRandomGenerator generator  = QRandomGenerator::securelySeeded();
 
-    this->num_major_points = generator.bounded(MIN_NUM_MAJOR_POINTS, MAX_NUM_MAJOR_POINTS + 1);
-    this->num_smooth_points = generator.bounded(MIN_NUM_SMOOTH_POINTS, MAX_NUM_SMOOTH_POINTS + 1);
+    this->num_major_points = generator.bounded(min_num_major_points, max_num_major_points + 1);
+    this->num_smooth_points = generator.bounded(min_num_smooth_points, max_num_smooth_points + 1);
     this->num_minor_points = this->num_major_points * this->num_smooth_points;
 
     // Randomize the vector of polygon radius-vectors
@@ -96,7 +94,7 @@ SmoothPolygon::randomizeSmoothPolygon()
     for (i = 0; i < this->num_major_points; ++i)
     {
         rnd_num = static_cast<f32>(generator.generateDouble());
-        tmp = MIN_ROUND_QUALITY + rnd_num * (MAX_ROUND_QUALITY - MIN_ROUND_QUALITY);
+        tmp = min_round_quality + rnd_num * (max_round_quality - min_round_quality);
         this->round_qualities.append(tmp);
     }
 }

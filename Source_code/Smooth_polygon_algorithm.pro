@@ -4,7 +4,7 @@
 #   solving the task of smoothing polygon vertices.
 #================================================================================
 
-QT += core gui
+QT += core gui widgets
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = Program
@@ -13,15 +13,20 @@ TEMPLATE = app
 SOURCES += \
     ./src/main.cpp \
     ./src/drawing_window.cpp \
+    ./src/control_window.cpp \
     ./src/smooth_polygon.cpp \
     ./src/misc_functions.cpp
 
 HEADERS += \
     ./include/drawing_window.h \
+    ./include/control_window.h \
     ./include/constants.h \
     ./include/misc_functions.h \
     ./include/smooth_polygon.h \
     ./include/utils.h
+
+FORMS = \
+	./ui/ControlWindow.ui
 
 INCLUDEPATH += $$PWD/include
 

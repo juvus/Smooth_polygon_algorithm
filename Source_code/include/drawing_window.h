@@ -14,7 +14,11 @@ Description: Declaration of the DrawingWindow class methods. This is the main
 
 // Program includes:
 #include <utils.h>
+#include <control_window.h>
 #include <smooth_polygon.h>
+
+class ControlWindow;
+class SmoothPolygon;
 
 class DrawingWindow : public QWindow
 {
@@ -23,10 +27,14 @@ class DrawingWindow : public QWindow
 
 public:
     // Constructor of the class
-    DrawingWindow(QWindow *parent = 0); 
+    DrawingWindow(QWindow *parent = nullptr); 
 
     // Destructor of the class
     ~DrawingWindow();
+
+    // Public fields:
+    SmoothPolygon *smooth_polygon;  // Pointer to the SmoothPolygon class
+    ControlWindow *control_window;  // Pointer to the ControlWindow class
 
 public slots:
     // Slot for sending the event for window update request
@@ -39,17 +47,13 @@ protected:
     // Method for the handling of different events
     bool event(QEvent *event) override;
 
-    // Method for handle the mouse press event on the window
-    void mousePressEvent(QMouseEvent *event) override;
-
     // Method for the resize window event
     void resizeEvent(QResizeEvent *event) override;
 
     // Method for the expose window event
-    void exposeEvent(QExposeEvent *event) override;   
+    void exposeEvent(QExposeEvent *event) override;  
 
 private:
-    SmoothPolygon *smooth_polygon;  // Pointer to the SmoothPolygon class
     QBackingStore *m_backingStore;  // Provides a drawing area for window
 };
 
