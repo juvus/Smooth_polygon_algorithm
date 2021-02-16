@@ -19,11 +19,11 @@ When tha application is started, two graphic windows are opened: *drawing window
 ## Documentstion
 When application is running the result of generation and rendering of a smooth polygon in drawing window can be controlled using control window. Control window has a number of spin box widgets for setting the lower and upper bounds of the following parameters:
 
-`Major points`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number of major points (vertices) of a polygon.<br>
-`Smooth points`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number of points that defines the quality of smoothing of every particular polygon vertex. It is obvious that more smooth points results to the more smooth surface.<br>
-`Round quality`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parameter showing how close the begining and end poits of a smoothing curve (Bezier curve) to the polygon vertex. Lower value produces more sharp corner.<br>
+`Major points`&nbsp;-&nbsp;Number of major points (vertices) of a polygon.<br>
+`Smooth points`&nbsp;-&nbsp;Number of points that defines the quality of smoothing of every particular polygon vertex. It is obvious that more smooth points results to the more smooth surface.<br>
+`Round quality`&nbsp;-&nbsp;Parameter showing how close the begining and end poits of a smoothing curve (Bezier curve) to the polygon vertex. Lower value produces more sharp corner.<br>
 
-After pressing the `Generate polygon` button, the polygon is generated and rendered with a set of parameters, the values of which are randomly selected between the defined MIN and MAX values. For example, if the value of `MIN major points` = 3 and `MAX major points` = 10 are defined for the `Major points` parameter, then only polygons with the number of vertices from 3 to 10 will be generated randomly. The situation is similar for the rest parameters.
+After pressing the `Generate polygon` button, the polygon is generated and rendered with a set of parameters, the values of which are randomly selected between the defined MIN and MAX values. For example, if `MIN major points = 3` and `MAX major points = 10` are defined for the `Major points` parameter, then only polygons with the number of vertices from 3 to 10 will be generated randomly. The situation is similar for the rest parameters.
 
 ## Install from source
 Installation, compilation and run of the application occurs when executing commands in a terminal window (The method is described for a UNIX-like terminal, for example, Bash from MSYS2. It also requires a working Mingw-w64 - G++ compiler, Qt5 framework libraries installed and configured paths).
@@ -74,6 +74,6 @@ $ ./Program
 Smooth polygon algorithm code in this project is available under the `GPLv3` license. You can find the license file here: [LICENSE](/LICENSE)
 
 ## References
-[1] https://en.wikipedia.org/wiki/B%C3%A9zier_curve
-[2] https://www.qt.io/
+[1] https://en.wikipedia.org/wiki/B%C3%A9zier_curve<br>
+[2] https://www.qt.io/<br>
 
