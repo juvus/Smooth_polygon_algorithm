@@ -24,4 +24,8 @@ u32 calc_lowest(u32 value_1, u32 value_2);
 // Function to calculate the point position between other two points
 QPoint find_between_point(QPoint begin_point, QPoint end_point, f32 alpha);
 
+// Function to calculate the arbitrary Bezier point
+QPoint calc_bezier_point(QPoint begin_point, QPoint middle_point,
+    QPoint end_point, f32 t);
+
 #endif // MISC_FUNCTIONS_H_

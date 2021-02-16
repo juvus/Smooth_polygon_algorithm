@@ -209,14 +209,14 @@ SmoothPolygon::calcMinorPoints()
     QPoint cur_major_point;  // Curent major point of the polygon
     QPoint next_major_point;  // Next major point of the polygon
 
-    QPoint prev_edge_point;  // Point sliding the previous edge
-    QPoint next_edge_point;  // Point sliding the next edge
+    QPoint begin_edge_point;  // Begin edge point of the Bezier curve
+    QPoint end_edge_point;  // End edge point of the Bezier curve
     QPoint result_minor_point;  // Point sliding the edge between prev and next major points
     
     u32 i, j;  // Temporary counters
     f32 round_quality;  // Current major point round quality value
-    f32 delta_edge;  // Delta of distance on previous and next edges
-    f32 dist_edge;  // Distance on previous and next edges
+    f32 delta_t;  // Delta t parameter for Bezier points calculation
+    f32 t;  // t parameter for Bezier points calculation (0 - 1)
     f32 delta_between;  // Delta of distance on edge between prev_edge and next_edge points
     f32 dist_between;  // Distance on between edge from prev_edge to next_edge points
 
@@ -240,24 +240,23 @@ SmoothPolygon::calcMinorPoints()
         else
             next_major_point = this->major_points[i + 1];
 
-        // Calculate the deltas and initialize distances:
+        // Calculate the begin and end point for Bezier points calculation:
         round_quality = this->round_qualities[i];
-        delta_edge = round_quality / (this->num_smooth_points - 1);
-        dist_edge = 0.0f;
-        delta_between = 1.0f / (this->num_smooth_points - 1);
-        dist_between = 0.0f;
+        delta_t = 1.0f / (this->num_smooth_points - 1);
+        t = 0.0f;
+        
+        begin_edge_point = find_between_point(prev_major_point, cur_major_point,
+            (1.0f - round_quality));
+        end_edge_point = find_between_point(cur_major_point, next_major_point, round_quality);
         
         // Cycle to calculate the minor point positions
         for (j = 0; j < this->num_smooth_points; ++j)
-        {
-            prev_edge_point = find_between_point(prev_major_point, cur_major_point,
-                (1.0f - round_quality + dist_edge)); 
-            next_edge_point = find_between_point(cur_major_point, next_major_point, dist_edge);    
-            result_minor_point = find_between_point(prev_edge_point, next_edge_point, dist_between);
+        {    
+            result_minor_point = calc_bezier_point(begin_edge_point, cur_major_point,
+                end_edge_point, t);
             this->minor_points.append(result_minor_point);
 
-            dist_edge += delta_edge;
-            dist_between += delta_between;
+            t += delta_t;
         }
     }
 }

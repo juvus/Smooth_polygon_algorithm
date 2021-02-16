@@ -55,3 +55,30 @@ find_between_point(QPoint begin_point, QPoint end_point, f32 alpha)
 
     return result;
 }
+
+QPoint 
+calc_bezier_point(QPoint begin_point, QPoint middle_point, QPoint end_point, f32 t)
+{
+    // Function to calculate the arbitrary Bezier point
+    f32 x_begin = static_cast<f32>(begin_point.x());
+    f32 y_begin = static_cast<f32>(begin_point.y());
+    f32 x_middle = static_cast<f32>(middle_point.x());
+    f32 y_middle = static_cast<f32>(middle_point.y());
+    f32 x_end = static_cast<f32>(end_point.x());
+    f32 y_end = static_cast<f32>(end_point.y());
+    f32 x_result, y_result;
+    QPoint result;
+
+    // Calculate x point coordinate
+    x_result = std::pow((1 - t), 2) * x_begin + 2 * (1 - t) * t * x_middle + \
+        std::pow(t, 2) * x_end;
+
+    // Calcualte y point coordinate
+    y_result = std::pow((1 - t), 2) * y_begin + 2 * (1 - t) * t * y_middle + \
+        std::pow(t, 2) * y_end;
+
+    result.setX(static_cast<int>(std::round(x_result)));
+    result.setY(static_cast<int>(std::round(y_result)));
+
+    return result;
+}
